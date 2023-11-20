@@ -75,7 +75,7 @@ input{
 
 .book-sentence{
   background-color: white;
-  font-size: 20px;
+  font-size: 12px;
   border: 1px solid black;
   text-align: left;
   display:grid;
@@ -89,7 +89,7 @@ input{
 }
 
 .book-info{
-  font-size: 20px;
+  font-size: 12px;
   padding: 4px 12px;
   color: #444;
   display: none;
