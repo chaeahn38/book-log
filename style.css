@@ -47,6 +47,9 @@ input{
 }
 
 #submit{
+  background-color: rgb(246,246,246);
+  border-radius: 0;
+  border: 1px solid black;
   width: 100%;
   padding: .2rem;
   box-sizing: border-box;
