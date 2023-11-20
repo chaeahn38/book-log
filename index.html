@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>문장 꽂기</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h4 id="title">문장 꽂기</h4>
+    <form id="myForm" name="submit-to-google-sheet">
+      <input type="text" id="input-sentence" name="sentence" placeholder="문장을 쓰시오">
+      <input type="text" id="input-book" name="book" placeholder="저자, 제목">
+      <button type="submit" id="submit">책꽂기</button>
+      <h5 id="rotate-btn">책장 회전하기</h5>
+    </form>
+  </div>
+
+  <div id="shelf-container">
+    <div id="bookShelf">
+      <button class="book-sentence">노래는 가사, 리듬과 펄스, 어울림이라는 공통 감각을 전략으로 취한다. </button>
+      <p class="book-info">오민, 포스터 텍스처</p>
+  
+      <button class="book-sentence">스스로 결정하는지, 아니면 다른 사람들이 당신의 호기심을 자극하여 결정하는지 묻고 싶습니다.</button>
+      <p class="book-info">피터 말러, 리서치란 무엇인가?</p>
+  
+      <button class="book-sentence">그리고 경악하고 말았어.</button>
+      <p class="book-info">한국타이포그라피학회, 진동새와 손편지</p>
+  
+      <button class="book-sentence">우리는 항상 현실과의 접촉을 완전히 상실하지 않기 위해 진보로 뛰쳐나오고 있다.</button>
+      <p class="book-info">빌렘 플루서, 글쓰기에 미래는 있는가</p>
+  
+      <button class="book-sentence">역시 모두들 웃으며 손을 내렸고, 한 이란 사람이 일어났다.</button>
+      <p class="book-info">목정원, 모국어는 차라리 침묵</p>
+  
+      <button class="book-sentence">페이지 밖에서 이 여자에게도 이름이 주어지기를.</button>
+      <p class="book-info">한유주, 우리가 세계에 기입될 때</p>
+    </div>
+  </div>
+  
+
+  <script src="toggle.js"></script>
+  <script src="rotate.js"></script>
+  <script src="submit.js"></script>
+</body>
+</html>

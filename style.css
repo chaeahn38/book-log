@@ -1,0 +1,96 @@
+@import url(//fonts.googleapis.com/earlyaccess/jejumyeongjo.css);
+
+*{
+  margin: 0;
+  padding: 0;
+  color: black;
+  font-size: 20px;
+  line-height: 2rem;
+  word-break: keep-all;
+  letter-spacing: -0.05rem;
+  font-family: 'Jeju Myeongjo', serif;
+}
+
+body{
+  height: 100vh;
+  align-items: stretch;
+  background-color: rgb(246,246,246);
+  position: relative;
+}
+
+.container{
+  text-align: center;
+  display: grid;
+  padding: 2rem 3rem 3rem 3rem;
+}
+
+h4{
+  font-weight: 700;
+  padding: 1rem;
+}
+
+input{
+  text-align: center;
+  width: 100%;
+  margin-top: .05rem;
+  margin-bottom: .05rem;
+  border: .05px solid black;
+}
+
+#myForm{
+  box-sizing: border-box;
+  padding: 1rem;
+  position: relative;
+  float: left;
+  background-color: rgb(255,255,255);
+  border: 1px solid black;
+}
+
+#submit{
+  width: 100%;
+  padding: .2rem;
+  box-sizing: border-box;
+  margin-top: 1rem;
+  cursor: pointer;
+}
+
+#rotate-btn{
+  margin-top: 1rem;
+  text-align: end;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+#shelf-container{
+  display: fixed;
+  transform-origin: 100% bottom;
+  transform: rotate(-90deg);
+
+}
+
+#bookShelf{
+  box-sizing: border-box;
+  white-space: nowrap;
+}
+
+.book-sentence{
+  background-color: white;
+  font-size: 20px;
+  border: 1px solid black;
+  text-align: left;
+  display:grid;
+  cursor: pointer;
+  padding: 12px;
+  line-height: 1.5;
+  border: none;
+  word-break: keep-all;
+  border: 1px solid black;
+  margin-bottom: 2px;
+}
+
+.book-info{
+  font-size: 20px;
+  padding: 4px 12px;
+  color: #444;
+  display: none;
+}
