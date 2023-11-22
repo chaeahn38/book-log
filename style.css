@@ -51,7 +51,7 @@ button{
 }
 
 #submit{
-  font-size: 16px;
+  font-size: 20px;
   background-color: rgb(246,246,246);
   border-radius: 0;
   border: 1px solid black;
@@ -63,6 +63,8 @@ button{
 }
 
 #rotate-btn{
+  font-size: 16px;
+  font-weight: 400;
   margin-top: 1rem;
   text-align: end;
   text-decoration: underline;
