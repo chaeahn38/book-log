@@ -7,12 +7,12 @@
     <style>
       :root {
         --shelf-thickness: 15rem;
-        --scale: 1;
+        --scale: 0.7;
       }
 
       @media (max-width: 640px) {
         :root {
-          --scale: 0.8;
+          --scale: 0.56;
         }
       }
 
@@ -113,6 +113,9 @@
       }
 
       .book-sentence {
+        appearance: none;
+        -webkit-appearance: none;
+        color: black;
         text-align: left;
         display: grid;
         cursor: pointer;
@@ -150,12 +153,12 @@
 
       @media (hover: hover) and (pointer: fine) {
         .book-sentence:hover + .book-info {
-          display: flex;
+          display: block;
         }
       }
 
       .book-sentence.centered + .book-info {
-        display: flex;
+        display: block;
       }
     </style>
   </head>
@@ -245,7 +248,7 @@
           openBook = null;
           return;
         }
-        btn.nextElementSibling.style.display = "flex";
+        btn.nextElementSibling.style.display = "block";
         openBook = btn;
       }
 
