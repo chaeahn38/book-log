@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Collecting Sentences</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css" />
+    <style>
+      :root {
+        --shelf-thickness: 15rem;
+        --scale: 1;
+      }
+
+      @media (max-width: 640px) {
+        :root {
+          --scale: 0.8;
+        }
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        height: 100vh;
+        overflow: hidden;
+        position: relative;
+        font-family: monospace;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      body::-webkit-scrollbar {
+        display: none;
+      }
+
+      body.turned {
+        height: auto;
+        overflow: auto;
+      }
+
+      .container {
+        box-sizing: border-box;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: 100%;
+        background-color: white;
+        text-align: center;
+        display: grid;
+        padding: 0.75rem 3rem 3rem 3rem;
+      }
+
+      #rotate-btn {
+        text-decoration: underline;
+        cursor: pointer;
+      }
+
+      #shelf-container {
+        position: fixed;
+        left: 0;
+        bottom: 1rem;
+        width: 100vw;
+        height: var(--shelf-thickness);
+        overflow-x: auto;
+        overflow-y: hidden;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+      }
+
+      #shelf-container::-webkit-scrollbar {
+        display: none;
+      }
+
+      @media (orientation: landscape) {
+        #shelf-container {
+          height: min(var(--shelf-thickness), calc(100vh - var(--container-height, 6rem) - 1rem));
+        }
+      }
+
+      body.turned #shelf-container {
+        position: static;
+        left: auto;
+        bottom: auto;
+        width: auto;
+        height: auto;
+        overflow: visible;
+        padding-top: var(--container-height, 6rem);
+      }
+
+      #bookShelf {
+        box-sizing: border-box;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: fit-content;
+        transform-origin: top left;
+        transform: rotate(-90deg) translateX(-100%);
+      }
+
+      @media (hover: none) {
+        #bookShelf {
+          padding: 50vw 0;
+        }
+      }
+
+      body.turned #bookShelf {
+        position: static;
+        width: auto;
+        padding: 0;
+        transform: none;
+      }
+
+      .book-sentence {
+        text-align: left;
+        display: grid;
+        cursor: pointer;
+        padding: calc(0.75rem * var(--scale));
+        line-height: 1.5;
+        word-break: keep-all;
+        white-space: nowrap;
+        width: fit-content;
+        border: 0.5px solid black;
+        margin-bottom: calc(0.125rem * var(--scale));
+        font-size: calc(1.2rem * var(--scale));
+        font-style: italic;
+      }
+
+      body.turned .book-sentence {
+        white-space: normal;
+        width: auto;
+      }
+
+      .book-info {
+        padding: calc(0.25rem * var(--scale)) calc(0.75rem * var(--scale));
+        white-space: nowrap;
+        width: fit-content;
+        display: none;
+      }
+
+      body.turned .book-info {
+        white-space: normal;
+        width: auto;
+      }
+
+      .book-info em {
+        font-style: italic;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        .book-sentence:hover + .book-info {
+          display: flex;
+        }
+      }
+
+      .book-sentence.centered + .book-info {
+        display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h5 id="rotate-btn">Turn bookshelf</h5>
+    </div>
+
+    <div id="shelf-container">
+      <div id="bookShelf"></div>
+    </div>
+
+    <script>
+      const scriptURL =
+        "https://script.google.com/macros/s/AKfycbwM7q8I8Fih3WAI23JNdhsDGZQGo_WkL3qtMGq6BUT-rIjn--_M4jGN0e0-W-iBMpomgw/exec";
+      const bookShelf = document.getElementById("bookShelf");
+      const shelfContainer = document.getElementById("shelf-container");
+      const rotateBtn = document.getElementById("rotate-btn");
+      const container = document.querySelector(".container");
+
+      document.documentElement.style.setProperty(
+        "--container-height",
+        container.offsetHeight + "px",
+      );
+
+      const BOOK_COLORS = [
+        "#F2F0EB",
+        "#E8E6E1",
+        "#DEDBD4",
+        "#D3D0C9",
+        "#E6E4E8",
+        "#DCDFE2",
+        "#D5DAD8",
+        "#E3DDD5",
+        "#D9D4CE",
+        "#CCCAC4",
+      ];
+      let lastColor = null;
+
+      function nextBookColor() {
+        let color;
+        do {
+          color = BOOK_COLORS[Math.floor(Math.random() * BOOK_COLORS.length)];
+        } while (color === lastColor);
+        lastColor = color;
+        return color;
+      }
+
+      function syncShelfThickness() {
+        shelfContainer.style.setProperty("--shelf-thickness", bookShelf.offsetWidth + "px");
+      }
+
+      const canHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+      const landscapeQuery = window.matchMedia("(orientation: landscape)");
+      const useLandscapeClickMode = () => !canHover && landscapeQuery.matches;
+
+      let centeredBook = null;
+      let openBook = null;
+
+      function updateCenteredBook() {
+        const containerRect = shelfContainer.getBoundingClientRect();
+        const centerX = containerRect.left + containerRect.width / 2;
+
+        let closest = null;
+        let closestDistance = Infinity;
+        document.querySelectorAll(".book-sentence").forEach((btn) => {
+          const rect = btn.getBoundingClientRect();
+          const distance = Math.abs(rect.left + rect.width / 2 - centerX);
+          if (distance < closestDistance) {
+            closestDistance = distance;
+            closest = btn;
+          }
+        });
+
+        if (closest !== centeredBook) {
+          if (centeredBook) centeredBook.classList.remove("centered");
+          if (closest) closest.classList.add("centered");
+          centeredBook = closest;
+        }
+      }
+
+      function toggleBookInfo(btn) {
+        if (openBook) {
+          openBook.nextElementSibling.style.display = "none";
+        }
+        if (btn === openBook) {
+          openBook = null;
+          return;
+        }
+        btn.nextElementSibling.style.display = "flex";
+        openBook = btn;
+      }
+
+      bookShelf.addEventListener("click", (e) => {
+        if (!useLandscapeClickMode()) return;
+        const btn = e.target.closest(".book-sentence");
+        if (!btn) return;
+        toggleBookInfo(btn);
+      });
+
+      if (!canHover) {
+        let ticking = false;
+        shelfContainer.addEventListener("scroll", () => {
+          if (useLandscapeClickMode()) return;
+          if (ticking) return;
+          ticking = true;
+          requestAnimationFrame(() => {
+            updateCenteredBook();
+            ticking = false;
+          });
+        });
+
+        landscapeQuery.addEventListener("change", () => {
+          if (centeredBook) {
+            centeredBook.classList.remove("centered");
+            centeredBook = null;
+          }
+          if (openBook) {
+            openBook.nextElementSibling.style.display = "none";
+            openBook = null;
+          }
+          if (!useLandscapeClickMode()) updateCenteredBook();
+        });
+      }
+
+      rotateBtn.addEventListener("click", () => {
+        document.body.classList.toggle("turned");
+      });
+
+      function addBookEntry(sentence, book) {
+        const button = document.createElement("button");
+        button.classList.add("book-sentence");
+        button.textContent = sentence;
+        button.style.backgroundColor = nextBookColor();
+        bookShelf.appendChild(button);
+
+        const paragraph = document.createElement("p");
+        paragraph.classList.add("book-info");
+        const commaIndex = book.indexOf(",");
+        if (commaIndex === -1) {
+          paragraph.textContent = book;
+        } else {
+          paragraph.append(book.slice(0, commaIndex + 1) + " ");
+          const title = document.createElement("em");
+          title.textContent = book.slice(commaIndex + 1).trim();
+          paragraph.append(title);
+        }
+        bookShelf.appendChild(paragraph);
+      }
+
+      async function loadBooks() {
+        try {
+          const response = await fetch(scriptURL);
+          const data = await response.json();
+          data.forEach((item) => addBookEntry(item.sentence, item.book));
+          syncShelfThickness();
+          if (!useLandscapeClickMode()) updateCenteredBook();
+        } catch (error) {
+          console.error("책 리스트를 불러오지 못했습니다.", error.message);
+        }
+      }
+
+      loadBooks();
+    </script>
+  </body>
+</html>
